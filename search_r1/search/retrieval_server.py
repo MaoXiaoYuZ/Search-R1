@@ -271,7 +271,7 @@ class DenseRetriever(BaseRetriever):
             return results
 
 def get_retriever(config):
-    if config.retrieval_method == "bm25":
+    if config.retrieval_method == "bm25" or True:
         return BM25Retriever(config)
     else:
         return DenseRetriever(config)
@@ -359,7 +359,6 @@ def retrieve_endpoint(request: QueryRequest):
 
 
 if __name__ == "__main__":
-    
     parser = argparse.ArgumentParser(description="Launch the local faiss retriever.")
     parser.add_argument("--index_path", type=str, default="/home/peterjin/mnt/index/wiki-18/e5_Flat.index", help="Corpus indexing file.")
     parser.add_argument("--corpus_path", type=str, default="/home/peterjin/mnt/data/retrieval-corpus/wiki-18.jsonl", help="Local corpus file.")
@@ -369,7 +368,7 @@ if __name__ == "__main__":
     parser.add_argument('--faiss_gpu', action='store_true', help='Use GPU for computation')
 
     args = parser.parse_args()
-    
+
     # 1) Build a config (could also parse from arguments).
     #    In real usage, you'd parse your CLI arguments or environment variables.
     config = Config(
