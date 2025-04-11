@@ -4,7 +4,7 @@ import warnings
 from typing import List, Dict, Optional
 import argparse
 
-import faiss
+# import faiss
 import torch
 import numpy as np
 from transformers import AutoConfig, AutoTokenizer, AutoModel
@@ -14,6 +14,7 @@ import datasets
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
+
 
 def load_corpus(corpus_path: str):
     corpus = datasets.load_dataset(
@@ -146,49 +147,26 @@ class BaseRetriever:
 class BM25Retriever(BaseRetriever):
     def __init__(self, config):
         super().__init__(config)
-        from pyserini.search.lucene import LuceneSearcher
-        self.searcher = LuceneSearcher(self.index_path)
-        self.contain_doc = self._check_contain_doc()
-        if not self.contain_doc:
-            self.corpus = load_corpus(self.corpus_path)
-        self.max_process_num = 8
+        self.corpus = load_corpus(self.corpus_path)
     
-    def _check_contain_doc(self):
-        return self.searcher.doc(0).raw() is not None
-
     def _search(self, query: str, num: int = None, return_score: bool = False):
-        if num is None:
-            num = self.topk
-        hits = self.searcher.search(query, num)
-        if len(hits) < 1:
-            if return_score:
-                return [], []
-            else:
-                return []
-        scores = [hit.score for hit in hits]
-        if len(hits) < num:
-            warnings.warn('Not enough documents retrieved!')
-        else:
-            hits = hits[:num]
+        import random
 
-        if self.contain_doc:
-            all_contents = [
-                json.loads(self.searcher.doc(hit.docid).raw())['contents'] 
-                for hit in hits
-            ]
-            results = [
-                {
-                    'title': content.split("\n")[0].strip("\""),
-                    'text': "\n".join(content.split("\n")[1:]),
-                    'contents': content
-                } 
-                for content in all_contents
-            ]
-        else:
-            results = load_docs(self.corpus, [hit.docid for hit in hits])
+        all_contents = [
+            e['contents'] 
+            for e in random.choices(self.corpus, k=num)
+        ]
+        results = [
+            {
+                'title': content.split("\n")[0].strip("\""),
+                'text': "\n".join(content.split("\n")[1:]),
+                'contents': content
+            } 
+            for content in all_contents
+        ]
 
         if return_score:
-            return results, scores
+            return results, [0.5, ] * len(results)
         else:
             return results
 

@@ -1,6 +1,13 @@
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export DATA_DIR='data/nq_search'
 
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export ftp_proxy="http://127.0.0.1:7890"
+export no_proxy="localhost,127.0.0.1,::1,.local"
+
+
+
 WAND_PROJECT='Search-R1'
 
 # export BASE_MODEL='meta-llama/Llama-3.2-3B'
