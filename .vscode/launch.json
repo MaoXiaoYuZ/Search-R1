@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+            {
+                "name": "Attach Ray",
+                "type": "debugpy",
+                "request": "attach",
+                "connect": {
+                    "host": "172.17.0.7",
+                    "port": 49835
+                },
+                "justMyCode": false
+            },
+            {
+                "name": "Attach Debugpy",
+                "type": "debugpy",
+                "request": "attach",
+                "connect": {
+                    "host": "localhost",
+                    "port": 5678
+                },
+                "justMyCode": false
+            }
+    ]
+}

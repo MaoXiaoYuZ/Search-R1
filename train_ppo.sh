@@ -1,4 +1,5 @@
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+# export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+export CUDA_VISIBLE_DEVICES=0,1
 export DATA_DIR='data/nq_search'
 
 export http_proxy="http://127.0.0.1:7890"
@@ -33,7 +34,8 @@ export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has som
 
 # max_prompt_length = (config['training']['max_start_length'] + config['training']['max_response_length'] * (config['training']['max_turns'] - 1) + config['training']['max_obs_length'] * config['training']['max_turns'])
 
-PYTHONUNBUFFERED=1 python3  -m debugpy --wait-for-client --listen 5678 -m verl.trainer.main_ppo \
+# PYTHONUNBUFFERED=1 python3  -m debugpy --wait-for-client --listen 5678 -m verl.trainer.main_ppo \
+PYTHONUNBUFFERED=1 python3  -m verl.trainer.main_ppo \
     data.train_files=$DATA_DIR/train.parquet \
     data.val_files=$DATA_DIR/test.parquet \
     data.train_data_num=null \
@@ -81,7 +83,7 @@ PYTHONUNBUFFERED=1 python3  -m debugpy --wait-for-client --listen 5678 -m verl.t
     +trainer.val_only=false \
     +trainer.val_before_train=true \
     trainer.default_hdfs_dir=null \
-    trainer.n_gpus_per_node=1 \
+    trainer.n_gpus_per_node=2 \
     trainer.nnodes=1 \
     trainer.save_freq=100 \
     trainer.test_freq=50 \
