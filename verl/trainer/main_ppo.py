@@ -105,7 +105,9 @@ import hydra
 def main(config):
     if not ray.is_initialized():
         # this is for local ray cluster
-        ray.init(runtime_env={'env_vars': {'RAY_DEBUG': '1', 'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+        ray.init(runtime_env={'env_vars': {
+            # 'RAY_DEBUG': '1', 
+            'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
 
     ray.get(main_task.remote(config))
 
@@ -125,7 +127,7 @@ def main_task(config):
 
     # download the checkpoint from hdfs
     # input('copy_local_path_from_hdfs...')
-    breakpoint()
+    # breakpoint()
     local_path = copy_local_path_from_hdfs(config.actor_rollout_ref.model.path)
 
     # instantiate tokenizer

@@ -52,6 +52,7 @@ class ActorRolloutRefWorker(Worker):
 
     def __init__(self, config: DictConfig, role: str):
         super().__init__()
+        # breakpoint()
         self.config = config
         import torch.distributed
         if not torch.distributed.is_initialized():
@@ -196,9 +197,9 @@ class ActorRolloutRefWorker(Worker):
 
         auto_wrap_policy = get_fsdp_wrap_policy(module=actor_module, config=fsdp_config.get('wrap_policy', None))
 
-        if self._is_rollout and self.config.rollout.name == 'hf':
-            # TODO(zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
-            auto_wrap_policy = None
+        # if self._is_rollout and self.config.rollout.name == 'hf':
+        #     # TODO(zhangchi.usc1992, shengguangming) fix me. Current, auto_wrap_policy causes HFRollout to hang in Gemma
+        #     auto_wrap_policy = None
 
         print(f'wrap_policy: {auto_wrap_policy}')
 
@@ -219,7 +220,7 @@ class ActorRolloutRefWorker(Worker):
             mixed_precision=mixed_precision,
             sync_module_states=True,
             device_mesh=self.device_mesh,
-            forward_prefetch=False)
+            forward_prefetch=False)     # actor_model, 运行到这占用6GB/卡（共2张）
 
         log_gpu_memory_usage('After Actor FSDP init', logger=logger)
 
@@ -283,7 +284,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def init_model(self):
-        breakpoint()
+        # breakpoint()
         from verl.workers.actor import DataParallelPPOActor
         # This is used to import external_lib into the huggingface systems
         import_external_libs(self.config.model.get('external_lib', None))
@@ -682,7 +683,7 @@ class CriticWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def init_model(self):
-        breakpoint()
+        # breakpoint()
         # This is used to import external_lib into the huggingface systems
         import_external_libs(self.config.model.get('external_lib', None))
 

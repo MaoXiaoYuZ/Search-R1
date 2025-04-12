@@ -10,7 +10,7 @@
                 "request": "attach",
                 "connect": {
                     "host": "172.17.0.7",
-                    "port": 49835
+                    "port": 34701
                 },
                 "justMyCode": false
             },
